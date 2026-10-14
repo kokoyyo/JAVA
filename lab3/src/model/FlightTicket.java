@@ -12,6 +12,8 @@ public abstract class FlightTicket {
     }
 
     public abstract double calculateFinalPrice();
+    public abstract double calculateFinalPrice(Baggage baggage);
+    public abstract double registerBaggage(Baggage baggage, double weight);
     public String getPassengerName() {return passengerName; }
     public String getRate() {return rate;}
     public double getPriceOfTicket() { return priceOfTicket;}

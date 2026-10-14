@@ -2,7 +2,7 @@ package model;
 
 public class User extends FlightTicket{
     public User(String passengerName, double priceOfTicket){
-        super(passengerName, priceOfTicket, "STANDARD");
+        super(passengerName, priceOfTicket, "ECONOMY");
     }
     public User(String passengerName, double priceOfTicket, String rate){
         super(passengerName, priceOfTicket, rate.toUpperCase());

@@ -22,13 +22,13 @@ public class Corporate extends FlightTicket{
         return Math.round(finalPriceOfTicket*100.0)/100.0;
     }
 
-    public void calculateFinalPrice(Baggage baggage){
-        System.out.println("ОШИБКА. Нет доступа к этой функции\n. Стоимость будет рассчитана без учета багажа");
-        calculateFinalPrice();
+    public double calculateFinalPrice(Baggage baggage){
+        System.out.println("ОШИБКА. Корпорациям багаж не доступен.\n");
+        return calculateFinalPrice();
     }
 
-    public void registerBaggage(Baggage baggage, double weight){
-        System.out.println("ОШИБКА. Нет доступа к этой функции\n. Стоимость будет рассчитана без учета багажа");
-        calculateFinalPrice();
+    public double registerBaggage(Baggage baggage, double weight){
+        System.out.println("ОШИБКА. Корпорациям багаж не доступен.\n ");
+        return calculateFinalPrice();
     }
 }
