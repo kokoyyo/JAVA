@@ -1,6 +1,8 @@
 package AirlineSystem;
 import model.FlightTicket;
 import service.NotificationService;
+import service.imple.SmsNotification;
+
 public class AirlineSystem {
     private final NotificationService notificationService;
     private static int totalCountOfTickets;
@@ -15,16 +17,25 @@ public class AirlineSystem {
     public void processingPayment(FlightTicket ticket, String contact) {
         System.out.println("\n===========================Оплата билета===========================");
         double finalPrice = ticket.calculateFinalPrice();
-
-        java.time.LocalDateTime now = java.time.LocalDateTime.now();
-        String message = String.format("%tF, %tT: Билет оплачен на имя %s.\n Тариф [%s]. К оплате: %.2f руб.", now, now,ticket.getPassengerName(),ticket.getRate(), finalPrice);
-        if (ticket.getAddedBaggage() != null) {
-            System.out.printf("\nВы добавили багаж %s, стоимость багажа до 23 кг составляет: %.2f руб.", ticket.getAddedBaggage().getName(), ticket.getAddedBaggage().getPriceOfBaggage());
-        }
-        notificationService.sendNotification(message, contact);
         totalRevenue += finalPrice;
         totalCountOfTickets++;
-        System.out.println("\n====================================================================");
+        java.time.LocalDateTime now = java.time.LocalDateTime.now();
+        String message;
+        String messageAboutBaggage="";
+        if (ticket.getAddedBaggage() != null) {
+            double priceWithBaggage = ticket.getAddedBaggage().getPriceOfBaggage()+finalPrice;
+            totalRevenue +=ticket.getAddedBaggage().getPriceOfBaggage();
+            messageAboutBaggage = String.format("Вы добавили багаж %s.\nCтоимость багажа до 23 кг составляет: %.2f руб.", ticket.getAddedBaggage().getName(), ticket.getAddedBaggage().getPriceOfBaggage());
+            message = String.format("%tF, %tT: Билет оплачен на имя %s.\n Тариф [%s]. К оплате: %.2f руб.", now, now,ticket.getPassengerName(),ticket.getRate(), priceWithBaggage);
+        }else{
+            message = String.format("%tF, %tT: Билет оплачен на имя %s.\n Тариф [%s]. К оплате: %.2f руб.", now, now,ticket.getPassengerName(),ticket.getRate(), finalPrice);
+        }
+        notificationService.sendNotification(message, contact);
+
+        if (!messageAboutBaggage.isEmpty()){
+            System.out.println(messageAboutBaggage);
+        }
+        System.out.println("\n===================================================================");
     }
 
     public static void printGlobalStatistics(){

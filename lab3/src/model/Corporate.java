@@ -1,5 +1,4 @@
 package model;
-
 public class Corporate extends FlightTicket{
     private final int activeLicensesCount;
     public int getActiveLicensesCount() { return activeLicensesCount; }

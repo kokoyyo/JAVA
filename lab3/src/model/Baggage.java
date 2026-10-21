@@ -7,7 +7,6 @@ public class Baggage {
         this.name = name.toUpperCase();
         setPriceOfBaggage(price);
     }
-
     public String getName() {
         return name;
     }
