@@ -7,7 +7,6 @@ public class AirlineSystem {
     private final NotificationService notificationService;
     private static int totalCountOfTickets;
     private static double totalRevenue;
-
     public static int getTotalCountOfTickets() {return totalCountOfTickets; }
     public static double getTotalRevenue() {return totalRevenue;}
     public AirlineSystem(NotificationService notificationService){
