@@ -33,9 +33,6 @@ public class FlightTicket {
         return Math.round(finalPrice *100.0)/100.0;
     }
 
-    public double registerBaggage(Baggage baggage){
-        return calculateFinalPrice(baggage);
-    }
 
     public double registerBaggage(Baggage baggage, double weight){
         this.addedBaggage = baggage;
