@@ -1,0 +1,58 @@
+package org.airline.system.airlineSystem;
+import org.airline.system.exception.DuplicatePassengerException;
+import org.airline.system.exception.FlightTicketNotFoundException;
+import org.airline.system.exception.InsufficientFundsException;
+import org.airline.system.exception.InvalidEmailException;
+import org.airline.system.model.FlightTicket;
+import service.NotificationService;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Pattern;
+public class AirlineSystem {
+    private final NotificationService notificationService;
+    private static int totalCountOfTickets;
+    private static double totalRevenue;
+    private final Map<String, FlightTicket> database = new HashMap<>();
+    public static int getTotalCountOfTickets() {return totalCountOfTickets; }
+    public static double getTotalRevenue() {return totalRevenue;}
+    public AirlineSystem(NotificationService notificationService){
+        this.notificationService = notificationService;
+    }
+    private static final Pattern EMAIL_PATTERN = Pattern.compile("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$");
+    public void registerFlightTicket(String email, FlightTicket ticket) throws DuplicatePassengerException {
+        if (email == null || !EMAIL_PATTERN.matcher(email).matches()){
+            throw new InvalidEmailException("Неверный email. [Передано: " + email + "]");
+        }
+        if (database.containsKey(email)){
+            throw new DuplicatePassengerException("Пассажир с email "+ email + " уже зарегистрирован.\n Проверьте почту или введите другой адрес");
+        }
+
+        database.put(email, ticket);
+    }
+
+    public void processPaymentByEmail(String email) throws FlightTicketNotFoundException, InsufficientFundsException{
+        FlightTicket ticket= database.get(email);
+        java.time.LocalDateTime now = java.time.LocalDateTime.now();
+        if (ticket == null){
+            throw new FlightTicketNotFoundException("Билет с email " + email + " не был оформлен");
+        }
+        double finalPrice = ticket.calculateFinalPrice();
+        if (ticket.getMoneyBalance() < finalPrice){
+            throw new InsufficientFundsException("На балансе недостаточно средств. Баланс [" + ticket.getMoneyBalance() + " руб.]");
+        }
+
+
+        String message = String.format("%tF, %tT: Билет оплачен на имя %s.\n Тариф [%s]. К оплате: %.2f руб.", now, now,ticket.getPassengerName(),ticket.getRate(), finalPrice);
+        notificationService.sendNotification(message,email);
+    }
+
+    public static void printGlobalStatistics(){
+        System.out.println("\n==========================================");
+        System.out.println("   ГЛОБАЛЬНАЯ СТАТИСТИКА ПРОДАЖИ БИЛЕТОВ   ");
+        System.out.println("\n==========================================");
+        System.out.println("Общее количество купленных билетов: " + getTotalCountOfTickets());
+        System.out.println("Общая выручка: " + Math.round(getTotalRevenue() * 100.0)/100.0 + " руб.");
+        System.out.println("\n==========================================");
+    }
+
+}

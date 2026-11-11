@@ -1,12 +1,26 @@
-package model;
+package org.airline.system.model;
+
+import org.airline.system.exception.InvalidFlightTicketException;
+import org.airline.system.exception.InvalidOptionException;
+import org.airline.system.exception.DepatureDateExpiredException;
+import java.time.LocalDate;
+
 public class Corporate extends FlightTicket{
     private final int activeLicensesCount;
     public int getActiveLicensesCount() { return activeLicensesCount; }
-    public Corporate(String passengerName, double priceOfTicket, String rate, int activeLicensesCount){
-        super(passengerName, priceOfTicket, rate);
+    public Corporate(String passengerName, double priceOfTicket, String rate, LocalDate date, double balance, int activeLicensesCount)
+            throws DepatureDateExpiredException{
+        super(passengerName, priceOfTicket, rate.toUpperCase(), date, balance);
         this.activeLicensesCount = Math.max(1, activeLicensesCount);
     }
     @Override
+    public void addOption(Option option){
+        if (option.getWeight() >10.0){
+            throw new InvalidOptionException("Корпоративные клиенты не могут провозить багаж.");
+        }
+        super.addOption(option);
+    }
+
     public double calculateFinalPrice(){
         final double priceWithRate = switch (getRate()){
             case "ECONOMY" -> 1.0;
@@ -21,13 +35,4 @@ public class Corporate extends FlightTicket{
         return Math.round(finalPriceOfTicket*100.0)/100.0;
     }
 
-    public double calculateFinalPrice(Baggage baggage){
-        System.out.println("ОШИБКА. Корпорациям багаж не доступен.\n");
-        return calculateFinalPrice();
-    }
-
-    public double registerBaggage(Baggage baggage, double weight){
-        System.out.println("ОШИБКА. Корпорациям багаж не доступен.\n ");
-        return calculateFinalPrice();
-    }
 }
