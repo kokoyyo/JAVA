@@ -1,4 +1,4 @@
-package org.airline.system.exception;
+package exception;
 
 public class DuplicatePassengerException extends Exception{
     public DuplicatePassengerException(String message){

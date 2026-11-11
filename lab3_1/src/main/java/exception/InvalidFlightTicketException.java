@@ -1,4 +1,4 @@
-package org.airline.system.exception;
+package exception;
 
 public class InvalidFlightTicketException extends RuntimeException{
     public InvalidFlightTicketException(String message){

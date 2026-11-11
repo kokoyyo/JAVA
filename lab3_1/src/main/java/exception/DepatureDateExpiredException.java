@@ -1,4 +1,4 @@
-package org.airline.system.exception;
+package exception;
 
 public class DepatureDateExpiredException extends Exception{
     public DepatureDateExpiredException(String message){

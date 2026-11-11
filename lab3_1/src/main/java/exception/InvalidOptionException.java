@@ -1,4 +1,4 @@
-package org.airline.system.exception;
+package exception;
 
 public class InvalidOptionException extends RuntimeException{
     public InvalidOptionException(String message){

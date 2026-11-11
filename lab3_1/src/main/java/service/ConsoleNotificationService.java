@@ -1,4 +1,4 @@
-package org.airline.system.service;
+package service;
 
 public class ConsoleNotificationService implements service.NotificationService {
     @Override

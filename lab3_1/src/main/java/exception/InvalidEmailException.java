@@ -1,4 +1,4 @@
-package org.airline.system.exception;
+package exception;
 
 public class InvalidEmailException extends RuntimeException{
     public InvalidEmailException(String message){

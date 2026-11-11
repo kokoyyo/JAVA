@@ -1,5 +1,5 @@
-package org.airline.system.model;
-import org.airline.system.exception.DepatureDateExpiredException;
+package model;
+import exception.DepatureDateExpiredException;
 import java.time.LocalDate;
 
 public class User extends FlightTicket{

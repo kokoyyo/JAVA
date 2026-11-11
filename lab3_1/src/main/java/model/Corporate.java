@@ -1,8 +1,7 @@
-package org.airline.system.model;
-
-import org.airline.system.exception.InvalidFlightTicketException;
-import org.airline.system.exception.InvalidOptionException;
-import org.airline.system.exception.DepatureDateExpiredException;
+package model;
+import exception.InvalidFlightTicketException;
+import exception.InvalidOptionException;
+import exception.DepatureDateExpiredException;
 import java.time.LocalDate;
 
 public class Corporate extends FlightTicket{

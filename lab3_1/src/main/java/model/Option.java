@@ -1,5 +1,5 @@
-package org.airline.system.model;
-import org.airline.system.exception.InvalidOptionException;
+package model;
+import exception.InvalidOptionException;
 public class Option {
     private final String name; // "БАГАЖ", "РУЧНАЯ КЛАДЬ"
     private final double price;

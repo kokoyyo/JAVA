@@ -1,9 +1,8 @@
-package org.airline.system.model;
+package model;
 import java.time.LocalDate;
-
-import org.airline.system.exception.DepatureDateExpiredException;
-import org.airline.system.exception.InvalidFlightTicketException;
-import org.airline.system.exception.InvalidOptionException;
+import exception.DepatureDateExpiredException;
+import exception.InvalidFlightTicketException;
+import exception.InvalidOptionException;
 import java.util.regex.Pattern;
 import java.util.ArrayList;
 import  java.util.List;
@@ -19,7 +18,7 @@ public abstract class  FlightTicket {
                                         throws DepatureDateExpiredException{
 
         if (passengerName == null || EMPTY_PATTERN.matcher(passengerName).matches()){
-            throw new InvalidFlightTicketException("Имя владельца билета не может быть пустым! Передано");
+            throw new InvalidFlightTicketException("Имя владельца билета не может быть пустым! Передано [" + passengerName + "]");
         }
         if (priceOfTicket < 0){
             throw new InvalidFlightTicketException("Стоимость билета должна быть больше нуля! Передано:" + priceOfTicket);

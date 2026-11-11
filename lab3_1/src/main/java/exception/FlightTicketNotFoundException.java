@@ -1,4 +1,4 @@
-package org.airline.system.exception;
+package exception;
 
 public class FlightTicketNotFoundException extends Exception{
     public FlightTicketNotFoundException(String message){

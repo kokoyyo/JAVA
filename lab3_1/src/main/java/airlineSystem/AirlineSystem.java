@@ -1,9 +1,9 @@
-package org.airline.system.airlineSystem;
-import org.airline.system.exception.DuplicatePassengerException;
-import org.airline.system.exception.FlightTicketNotFoundException;
-import org.airline.system.exception.InsufficientFundsException;
-import org.airline.system.exception.InvalidEmailException;
-import org.airline.system.model.FlightTicket;
+package airlineSystem;
+import exception.DuplicatePassengerException;
+import exception.FlightTicketNotFoundException;
+import exception.InsufficientFundsException;
+import exception.InvalidEmailException;
+import model.FlightTicket;
 import service.NotificationService;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,11 +34,11 @@ public class AirlineSystem {
         FlightTicket ticket= database.get(email);
         java.time.LocalDateTime now = java.time.LocalDateTime.now();
         if (ticket == null){
-            throw new FlightTicketNotFoundException("Билет с email " + email + " не был оформлен");
+            throw new FlightTicketNotFoundException("Билет с email " + email + " не был оформлен в системе.");
         }
         double finalPrice = ticket.calculateFinalPrice();
         if (ticket.getMoneyBalance() < finalPrice){
-            throw new InsufficientFundsException("На балансе недостаточно средств. Баланс [" + ticket.getMoneyBalance() + " руб.]");
+            throw new InsufficientFundsException("На балансе недостаточно средств. [К оплате: " + finalPrice + " рублей. Баланс " + ticket.getMoneyBalance() + " руб.]");
         }
 
 

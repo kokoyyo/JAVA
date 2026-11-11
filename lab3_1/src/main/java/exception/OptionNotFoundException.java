@@ -1,4 +1,4 @@
-package org.airline.system.exception;
+package exception;
 
 public class OptionNotFoundException extends Exception{
     public OptionNotFoundException(String message){
