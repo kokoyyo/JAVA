@@ -12,7 +12,7 @@ public class Main {
     public static void main(String[] args){
         service.NotificationService service = new ConsoleNotificationService();
         AirlineSystem system = new AirlineSystem(service);
-        System.out.println("\n========(Сценарий 1)========\n");
+        System.out.println("\n========(Сценарий 1. Успешная регистрация билета по почте)========\n");
         LocalDate departureDate1 =LocalDate.now().plusDays(14);
         Option baggage = new Option("БАГАЖ", 2350, 23);
         Option handLuggage = new Option("Ручная кладь", 0, 8);
@@ -22,8 +22,8 @@ public class Main {
             FlightTicket ticket1 = new User("Пушкин", 23500, "BUSINESS", departureDate1,10000000);
             ticket1.addOption(baggage);
             ticket1.addOption(handLuggage);
-            system.registerFlightTicket("pushkin_as@email.com", ticket1);
-            system.processPaymentByEmail("pushkin_as@email.com");
+            system.registerFlightTicket("pushkin_as@gmail.com", ticket1);
+            system.processPaymentByEmail("pushkin_as@gmail.com");
 
             FlightTicket ticket2 = new User("Фаулз",10000, "ECONOMY", departureDate1, 20000);
             ticket2.addOption(baggage);
@@ -60,6 +60,24 @@ public class Main {
             System.out.println("[ERROR] " + exception.getMessage());
         }
 
+        System.out.println("\n=======(Сценарий 5. Попытка регистрации билета по адресу из хэша)======\n");
+        try {
+            FlightTicket ticket5 = new User("Пушкин", 23500, "BUSINESS", departureDate1,10000000);
+            system.registerFlightTicket("pushkin_as@gmail.com",ticket5);
+        }
+        catch (DepatureDateExpiredException | DuplicatePassengerException exception){
+            System.out.println("[ERROR] " + exception.getMessage());
+        }
+
+        System.out.println("\n=======(Сценарий 6. Недостаточно средств на балансе)======\n");
+        try {
+            FlightTicket ticket5 = new User("Ричардсон", 21500, "BUSINESS", departureDate1,50);
+            system.registerFlightTicket("richardson@gmail.com",ticket5);
+            system.processPaymentByEmail("richardson@gmail.com");
+        }
+        catch (DepatureDateExpiredException| FlightTicketNotFoundException | DuplicatePassengerException | InsufficientFundsException exception){
+            System.out.println("[ERROR] " + exception.getMessage());
+        }
 
         System.out.println("\n_________Программа успешно завершена_________\n");
 
