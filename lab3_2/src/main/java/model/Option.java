@@ -29,7 +29,7 @@ public class Option {
         }
         else if (weight <= 10.0){
             this.name = name.toUpperCase() + "[РУЧНАЯ КЛАДЬ]";
-            this.price = 0.0;
+            this.price = price;
         }
         else {
             this.name =name.toUpperCase();

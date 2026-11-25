@@ -31,14 +31,12 @@ class AirlineSystemTest {
                 .priceOfTicket(25000)
                 .moneyBalance(5000000)
                 .departureDate(LocalDate.now().plusDays(5))
+                .includedBaggage(Baggage.builder().name("Базовый багаж").weight(20).build())
                 .build();
         ticket.addOption(Option.builder().name("Ручная кладь").price(1000.0).weight(5).build());
         ticket.addOption(Option.builder().name("Багаж").price(5000.0).weight(25).build());
-        Baggage included = ticket.getIncludedBaggage();
-
         double actualPrice = ticket.calculateFinalPrice();
-        assertEquals(31000.0, actualPrice, "Цена должна учитывать тариф, багаж и вседобавленные опции");
-        assertEquals(0.0, included.calculateExtraPrice(), "За базовый багаж 20 кг доплаты быть не должно");
+        assertEquals(36000.0, actualPrice, "Цена должна учитывать тариф, багаж и вседобавленные опции");
     }
 
     @Test
@@ -82,5 +80,27 @@ class AirlineSystemTest {
         system.registerFlightTicket("p2@mail.ru", passenger2);
         double totalRevenue = system.calculateTotalRevenue();
         assertEquals(111000.0, totalRevenue,"Общая выручка должна учитывать тарифные коэффициенты и опции");
+    }
+    @Test
+    @DisplayName("6. Исключение: попытка регистрации двух билетов на один email")
+    void shouldThrowExceptionWhenEmailIsDuplicate() throws Exception {
+        String sameEmail = "test@test.com";
+        FlightTicket firstTicket = new User("Даша Бабич", 10000, "ECONOMY", validDate, 50000);
+        FlightTicket secondTicket = new User("Софья Морозова", 15000, "ECONOMY", validDate, 50000);
+        system.registerFlightTicket(sameEmail, firstTicket);
+        assertThrows(DuplicatePassengerException.class, () -> {
+            system.registerFlightTicket(sameEmail, secondTicket);
+        }, "Попытка создания билета по существуещему в баз данных email должна выбрасыввть исключени DuplicatePassengerException");
+    }
+
+    @Test
+    @DisplayName("7. Провекра гранчиеного случая: багаж ровно 23 кг не требует доплаты")
+    void shouldNotChargeExtraForExactLimitBaggage() throws Exception {
+        Baggage exactly20Kg = Baggage.builder()
+                .name("Базовый багаж")
+                .weight(23.0)
+                .build();
+        double extraPrice = exactly20Kg.calculateExtraPrice();
+        assertEquals(0.0, extraPrice, "За багаж весом ровно 23 кг доплаты быть не должно");
     }
 }

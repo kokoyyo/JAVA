@@ -1,4 +1,5 @@
 exception\InvalidOptionException.class
+model\Baggage$BaggageBuilder.class
 exception\DepatureDateExpiredException.class
 exception\DuplicatePassengerException.class
 model\Option$OptionBuilder.class
