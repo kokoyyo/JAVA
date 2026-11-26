@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import model.FlightTicket;
+import model.Option;
 import service.NotificationService;
 import java.util.HashMap;
 import java.util.List;
@@ -44,6 +45,10 @@ public class AirlineSystem {
     public Map<String, Long> getTicketCountByRate(){
         return database.values().stream().collect(Collectors.groupingBy(FlightTicket::getRate, Collectors.counting()));
     }
+    public Map<String, List<FlightTicket>> groupSubscriptionsByPlan() {
+        return database.values().stream()
+                .collect(Collectors.groupingBy(FlightTicket::getRate));
+    }
     public double calculateTotalRevenue(){
         double total = database.values().stream().mapToDouble(FlightTicket::calculateFinalPrice).sum();
         return Math.round(total*100.0)/100.0;
@@ -60,6 +65,24 @@ public class AirlineSystem {
         }
         String message = String.format("%tF, %tT: Билет оплачен на имя %s.\n Тариф [%s]. К оплате: %.2f руб.", now, now,ticket.getPassengerName(),ticket.getRate(), finalPrice);
         notificationService.sendNotification(message,email);
+    }
+    public void printDatabase() {
+        System.out.println("\n================ БАЗА ДАННЫХ ПАССАЖИРОВ ================");
+        System.out.printf("%-30s | %-25s | %-10s | %-10s%n", "Email", "Имя пассажира", "Тариф", "Цена");
+        System.out.println("--------------------------------------------------------------------------");
+
+        for (Map.Entry<String, FlightTicket> entry : database.entrySet()) {
+            String email = entry.getKey();
+            FlightTicket ticket = entry.getValue();
+
+            System.out.printf("%-30s | %-25s | %-10s | %-10.2f%n",
+                    email,
+                    ticket.getPassengerName(),
+                    ticket.getRate(),
+                    ticket.calculateFinalPrice());
+        }
+        System.out.println("==========================================================");
+        System.out.println("Всего записей: " + database.size());
     }
     public static void printGlobalStatistics(){
         System.out.println("\n==========================================");

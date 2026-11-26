@@ -13,17 +13,20 @@ import service.imple.EmailNotification;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+
 @Slf4j
 public class Main {
     private static void generatePassangers(AirlineSystem airlineSystem, int count){
         Faker faker = new Faker(new Locale("ru"));
-        String[] rates = {"ECONOMY", "STANDARD", "BUSINESS"};
+        Faker englishfaker = new Faker(new Locale("en"));
+        String[] rates = {"ECONOMY", "COMFORT", "BUSINESS"};
         String[] availableOptions = {"БАГАЖ", "РУЧНАЯ КЛАДЬ"};
         for (int i=0;i<count;i++){
             String name =faker.name().fullName();
             double priceTicket = faker.number().randomDouble(2, 2000, 200000);
             String rate = rates[faker.random().nextInt(rates.length)];
-            String email = i + "_" + faker.internet().emailAddress();
+            String email = i + "_" + englishfaker.internet().emailAddress();
             String phone = faker.phoneNumber().cellPhone();
             double balance = faker.number().randomDouble(2, 50, 2000000);
             LocalDate departureDate = LocalDate.now().plusDays(1 + faker.random().nextInt(30));
@@ -40,7 +43,7 @@ public class Main {
                             .build();
                 } else {
                     ticket = User.builder()
-                            .passengerName(faker.company().name())
+                            .passengerName(name)
                             .priceOfTicket(priceTicket)
                             .rate(rate)
                             .departureDate(departureDate)
@@ -74,15 +77,18 @@ public class Main {
         NotificationService emailService = new EmailNotification();
         AirlineSystem system = new AirlineSystem(emailService);
         generatePassangers(system, 50);
+        system.printDatabase();
         System.out.println("--------------АНАЛИТИКА STREAM API--------------");
-        System.out.println("Всего записей в базе: " + system.getDatabase().size());
-        System.out.println("Общая выручка: " + system.calculateTotalRevenue());
-        System.out.println("Количество BUSINESS билетов: " + system.countBusinessTickets());
+        System.out.println("\nВсего записей в базе: " + system.getDatabase().size());
+        System.out.println("\nОбщая выручка: " + system.calculateTotalRevenue());
+        System.out.println("\nКоличество BUSINESS билетов: " + system.countBusinessTickets());
         List<FlightTicket> businessClients = system.findVIPTickets(30000);
-        System.out.println("BUSINESS-пассажиры (стоимость билета > 30000 руб.): " + businessClients.size());
+        System.out.println("\nBUSINESS-пассажиры (стоимость билета > 30000 руб.): " + businessClients.size());
         businessClients.stream().limit(5).forEach(ticket -> System.out.printf("  * %s [%s] — %.2f руб. (опций: %d)%n",
                 ticket.getPassengerName(), ticket.getRate(), ticket.calculateFinalPrice(), ticket.getAddedOption().size()));
-
+        System.out.println("\nРаспределение по тарифам:");
+        Map<String, List<FlightTicket>> grouped = system.groupSubscriptionsByPlan();
+        grouped.forEach((plan, tickets) -> System.out.printf("  - Тариф %s: %d чел.%n", plan, tickets.size()));
         System.out.println("=========Проверка обработки исключений=========");
         try{
             String email = system.getDatabase().keySet().iterator().next();
